@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.search_results_arrow {
+  transform: translateX(-50%) rotate(45deg);
+  border-top: 1px solid #e5e7eb;
+  border-left: 1px solid #e5e7eb;
+}

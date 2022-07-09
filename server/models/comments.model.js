@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
-const { Schema, model } = mongoose;
-const PostSchema = new Schema(
+const { Schema, model, models } = mongoose;
+
+const CommentSchema = new Schema(
   {
     content: {
       type: String,
@@ -24,5 +25,5 @@ const PostSchema = new Schema(
   { timestamps: true }
 );
 
-const Post = model.Post || model("Post", PostSchema);
-export default Post;
+const Comment = models.Comment || model("Comment", CommentSchema);
+export default Comment;

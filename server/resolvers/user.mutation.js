@@ -1,4 +1,4 @@
-import User from "../models/user.model.js";
+import { UserModel as User } from "../models/index.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -57,6 +57,9 @@ const userMutations = {
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+
+    console.log(token);
+
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 365,
@@ -70,6 +73,7 @@ const userMutations = {
         data: null,
       };
     }
+
     return {
       sucess: true,
       message: "User logged in successfully",

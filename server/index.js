@@ -2,17 +2,28 @@ import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import dotenv from "dotenv";
 import typeDefs from "./types/index.js";
-import UserQuery from "./resolvers/user.query.js";
-import userMutations from "./resolvers/user.mutation.js";
+import {
+  UserQuery,
+  UserMutation,
+  PostQuery,
+  PostMutation,
+  SaveQuery,
+  SaveMutation,
+} from "./resolvers/index.js";
+
 import dbConnect from "./configs/db.js";
 dotenv.config();
 
 const resolvers = {
   Query: {
     ...UserQuery,
+    ...PostQuery,
+    ...SaveQuery,
   },
   Mutation: {
-    ...userMutations,
+    ...UserMutation,
+    ...PostMutation,
+    ...SaveMutation,
   },
 };
 

@@ -1,8 +1,10 @@
 import mongoose from "mongoose";
-const { Schema, model } = mongoose;
+const { Schema, model, models } = mongoose;
+
 const PostSchema = new Schema(
   {
-    collection: [
+    collections: [
+      // image and video Collections
       {
         type: String,
         required: true,
@@ -16,8 +18,16 @@ const PostSchema = new Schema(
       ref: "User",
     },
     likes: {
-      type: Number,
-      default: 0,
+      total: {
+        type: Number,
+        default: 0,
+      },
+      users: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+        },
+      ],
     },
     comments: [
       {
@@ -29,5 +39,5 @@ const PostSchema = new Schema(
   { timestamps: true }
 );
 
-const Post = model.Post || model("Post", PostSchema);
+const Post = models.Post || model("Post", PostSchema);
 export default Post;

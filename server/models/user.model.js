@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-const { Schema, model } = mongoose;
+const { Schema, model, models } = mongoose;
 const UserSchema = new Schema(
   {
     name: {
@@ -59,5 +59,5 @@ const UserSchema = new Schema(
   { timestamps: true }
 );
 
-const User = model.User || model("User", UserSchema);
+const User = models.User || model("User", UserSchema);
 export default User;

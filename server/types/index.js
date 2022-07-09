@@ -21,7 +21,6 @@ const typeDefs = gql`
     updatedAt: String!
     following: [User!]
     followers: [User!]
-    collection: [Post!]
     bio: String
     profile: String
     website: String
@@ -30,11 +29,17 @@ const typeDefs = gql`
   }
 
   type Post {
-    collection: [String!]
+    _id: ID!
+    collections: [String!]
     description: String
     user: User!
-    likes: Int
+    likes: LikeType!
     comments: [Comment!]
+  }
+
+  type LikeType {
+    total: Int!
+    users: [ID!]
   }
 
   type Comment {
@@ -44,20 +49,66 @@ const typeDefs = gql`
     post: Post!
   }
 
-  type Response {
+  type NormalResponse {
+    sucess: Boolean!
+    message: String!
+  }
+
+  type UserResponse {
     sucess: Boolean!
     message: String!
     data: User
   }
 
+  type PostResponse {
+    sucess: Boolean!
+    message: String!
+    data: [Post]
+  }
+  type SavedPostResponse {
+    sucess: Boolean!
+    message: String!
+    data: [Post]
+    hasSaved: Boolean!
+  }
+
+  input LimitAndSkip {
+    limit: Int!
+    skip: Int!
+  }
+
+  input GetSinglePostInput {
+    id: ID!
+  }
+
+  input CreatePostInput {
+    description: String!
+    collections: [String!]
+    post: ID!
+  }
+
+  input SavePostInput {
+    post: ID!
+  }
+
   type Query {
     getGreetings: String!
-    getAuthorizedUser: Response!
+    getAuthorizedUser: UserResponse!
+
+    getPosts(input: LimitAndSkip!): PostResponse!
+    getSinglePost(input: GetSinglePostInput!): SavedPostResponse!
+    getSavedPosts(input: LimitAndSkip!): PostResponse!
+    getUserPost: PostResponse!
   }
 
   type Mutation {
-    createUser(input: CreateUserInput!): Response!
-    loginUser(input: UserInput!): Response!
+    createUser(input: CreateUserInput!): UserResponse!
+    loginUser(input: UserInput!): UserResponse!
+
+    createPost(input: CreatePostInput!): NormalResponse!
+    likeDislikePost(input: SavePostInput!): NormalResponse!
+
+    savePost(input: SavePostInput!): NormalResponse!
   }
 `;
 

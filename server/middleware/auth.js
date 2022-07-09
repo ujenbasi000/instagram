@@ -4,6 +4,7 @@ const auth = async (ctx) => {
   try {
     const { req } = ctx;
     const token = req.headers.authorization.split(" ")[1];
+
     if (!token) {
       return { id: null };
     }

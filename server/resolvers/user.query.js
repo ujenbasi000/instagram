@@ -1,17 +1,19 @@
 import auth from "../middleware/auth.js";
-import User from "../models/user.model.js";
+import { UserModel as User } from "../models/index.js";
 
 const resolvers = {
   getGreetings: () => "Hello world!",
 
   getAuthorizedUser: async (_, __, ctx) => {
     const { id } = await auth(ctx);
+
     if (!id)
       return {
         sucess: false,
         message: "User not found",
         data: null,
       };
+
     const user = await User.findById(id);
 
     if (!user)

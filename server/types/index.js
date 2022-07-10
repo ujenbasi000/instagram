@@ -31,10 +31,12 @@ const typeDefs = gql`
   type Post {
     _id: ID!
     collections: [String!]
-    description: String
+    caption: String!
     user: User!
     likes: LikeType!
     comments: [Comment!]
+    createdAt: String!
+    updatedAt: String!
   }
 
   type LikeType {
@@ -47,6 +49,8 @@ const typeDefs = gql`
     content: String!
     likes: Int!
     post: Post!
+    createdAt: String!
+    updatedAt: String!
   }
 
   type NormalResponse {
@@ -63,8 +67,9 @@ const typeDefs = gql`
   type PostResponse {
     sucess: Boolean!
     message: String!
-    data: [Post]
+    data: [Post!]
   }
+
   type SavedPostResponse {
     sucess: Boolean!
     message: String!
@@ -82,13 +87,26 @@ const typeDefs = gql`
   }
 
   input CreatePostInput {
-    description: String!
+    caption: String!
     collections: [String!]
     post: ID!
   }
 
   input SavePostInput {
     post: ID!
+  }
+
+  input CommentPostInput {
+    post: ID!
+    comment: String!
+  }
+
+  input LikeDislikeCommentInput {
+    comment: ID!
+  }
+
+  input FollowUnfollowUserInput {
+    userId: ID!
   }
 
   type Query {
@@ -104,9 +122,12 @@ const typeDefs = gql`
   type Mutation {
     createUser(input: CreateUserInput!): UserResponse!
     loginUser(input: UserInput!): UserResponse!
+    followUnfollowUser(input: FollowUnfollowUserInput!): NormalResponse!
 
     createPost(input: CreatePostInput!): NormalResponse!
     likeDislikePost(input: SavePostInput!): NormalResponse!
+    commentPost(input: CommentPostInput!): NormalResponse!
+    likeDislikeComment(input: LikeDislikeCommentInput!): NormalResponse!
 
     savePost(input: SavePostInput!): NormalResponse!
   }

@@ -14,7 +14,20 @@ const PostQuery = {
       }
       const { limit, skip } = input;
 
-      const posts = await Post.find().limit(limit).skip(skip).populate("user");
+      const posts = await Post.find()
+        .limit(limit)
+        .skip(skip)
+        .populate({
+          path: "user",
+          model: "User",
+        })
+        .populate({
+          path: "comments",
+          populate: {
+            path: "user",
+            model: "User",
+          },
+        });
 
       return {
         sucess: true,
@@ -24,7 +37,7 @@ const PostQuery = {
     } catch (error) {
       return {
         sucess: false,
-        message: "Posts not found",
+        message: error.message,
         data: null,
       };
     }

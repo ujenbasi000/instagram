@@ -1,4 +1,4 @@
-import { PostModel as Post } from "../models/index.js";
+import { PostModel as Post, CommentModel as Comment } from "../models/index.js";
 import auth from "../middleware/auth.js";
 
 const PostMutation = {
@@ -79,6 +79,101 @@ const PostMutation = {
         sucess: false,
         message: error.message,
         data: null,
+      };
+    }
+  },
+
+  commentPost: async (_, { input }, ctx) => {
+    try {
+      const { id } = await auth(ctx);
+      if (!id) {
+        return {
+          sucess: false,
+          message: "User not found",
+        };
+      }
+
+      const { post, comment } = input;
+
+      if (!comment) {
+        return {
+          sucess: false,
+          message: "Comment is required",
+        };
+      }
+
+      let postToComment = await Post.findById(post);
+      if (!postToComment) {
+        return {
+          sucess: false,
+          message: "Post not found",
+        };
+      }
+
+      const newComment = await Comment.create({
+        content: comment,
+        user: id,
+        post,
+      });
+
+      postToComment.comments = [newComment._id].concat(postToComment.comments);
+
+      await postToComment.save();
+
+      return {
+        sucess: true,
+        message: "Comment created",
+      };
+    } catch (err) {
+      return {
+        sucess: false,
+        message: err.message,
+      };
+    }
+  },
+
+  likeDislikeComment: async (_, { input }, ctx) => {
+    try {
+      const { id } = await auth(ctx);
+      if (!id) {
+        return {
+          sucess: false,
+          message: "User not found",
+        };
+      }
+
+      const { comment } = input;
+
+      let commentToLike = await Comment.findById(comment);
+      if (!commentToLike) {
+        return {
+          sucess: false,
+          message: "Comment not found",
+        };
+      }
+
+      let alreadyLiked = false;
+
+      if (commentToLike.likes.users.includes(id)) {
+        alreadyLiked = true;
+        commentToLike.likes.users.pull(id);
+        commentToLike.likes.total -= 1;
+      } else {
+        alreadyLiked = false;
+        commentToLike.likes.users.push(id);
+        commentToLike.likes.total += 1;
+      }
+
+      await commentToLike.save();
+
+      return {
+        sucess: true,
+        message: alreadyLiked ? "Comment disliked" : "Comment liked",
+      };
+    } catch (error) {
+      return {
+        sucess: false,
+        message: error.message,
       };
     }
   },

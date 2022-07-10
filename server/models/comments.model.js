@@ -13,8 +13,13 @@ const CommentSchema = new Schema(
       required: true,
     },
     likes: {
-      type: Number,
-      default: 0,
+      total: { type: Number, default: 0 },
+      users: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+        },
+      ],
     },
     post: {
       type: Schema.Types.ObjectId,

@@ -1,9 +1,6 @@
-import React from "react";
-
 const Home = () => {
   return (
     <svg
-      aria-label="Home"
       color="#262626"
       fill="#262626"
       height="24"

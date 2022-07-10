@@ -10,9 +10,15 @@ import {
   SaveQuery,
   SaveMutation,
 } from "./resolvers/index.js";
+import CookieParser from "cookie-parser";
 
 import dbConnect from "./configs/db.js";
 dotenv.config();
+
+const corsOptions = {
+  origin: true,
+  credentials: true,
+};
 
 const resolvers = {
   Query: {
@@ -37,7 +43,8 @@ const app = express();
 (async () => {
   await server.start();
   dbConnect();
-  server.applyMiddleware({ app });
+  app.use(CookieParser());
+  server.applyMiddleware({ app, cors: corsOptions });
   app.listen({ port: process.env.PORT }, () =>
     console.log(
       `🚀 Server ready at http://localhost:${process.env.PORT}/${server.graphqlPath}`

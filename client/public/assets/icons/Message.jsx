@@ -1,9 +1,6 @@
-import React from "react";
-
 const Message = () => {
   return (
     <svg
-      ariaLabel="Messenger"
       color="#262626"
       fill="#262626"
       height="24"

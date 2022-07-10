@@ -1,4 +1,4 @@
-const Notification = () => {
+const Like = () => {
   return (
     <svg
       color="#262626"
@@ -13,4 +13,4 @@ const Notification = () => {
   );
 };
 
-export default Notification;
+export default Like;

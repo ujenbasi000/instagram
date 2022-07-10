@@ -20,13 +20,11 @@ const SearchBar = () => {
       />
       {!inputFocus && (
         <div
-          className="absolute top-0 left-0 w-full h-full bg-gray-200 z-30 rounded-md
-          py-1 px-3 text-gray-600 cursor-text flex items-center justify-start gap-3
-          "
+          className="absolute top-0 left-0 w-full h-full bg-gray-200 z-30 rounded-md py-1 px-3 text-gray-600 cursor-text flex items-center justify-start gap-3"
           onClick={() => setInputFocus(true)}
         >
           <Search />
-          <span>Search</span>
+          <span className="text-sm">Search</span>
         </div>
       )}
       {inputFocus && (

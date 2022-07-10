@@ -1,9 +1,6 @@
-import React from "react";
-
 const search = () => {
   return (
     <svg
-      aria-label="Search"
       color="#8e8e8e"
       fill="#8e8e8e"
       height="16"

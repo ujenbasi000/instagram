@@ -5,7 +5,7 @@ import HeaderMenu from "./HeaderMenu";
 
 const Header = () => {
   return (
-    <div className="bg-white px-3 border-b border-gray-300">
+    <div className="hidden xl:block bg-white px-3 border-b border-gray-300">
       <div className="container mx-auto py-2 h-[60px] flex items-center justify-between">
         <Image src={InstagramLogo} width={120} height={35} alt="Logo" />
         <SearchBar />

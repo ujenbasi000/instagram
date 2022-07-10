@@ -3,7 +3,6 @@ import React from "react";
 const Explore = () => {
   return (
     <svg
-      aria-label="Find People"
       color="#262626"
       fill="#262626"
       height="24"

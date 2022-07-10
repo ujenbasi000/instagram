@@ -11,6 +11,12 @@ const UserSchema = new Schema(
       required: true,
       unique: true,
     },
+    profile: {
+      url: {
+        type: String,
+        default: "https://i.imgur.com/XyqQYjJ.png",
+      },
+    },
     password: {
       type: String,
       required: true,

@@ -11,7 +11,8 @@ import {
   SaveMutation,
 } from "./resolvers/index.js";
 import CookieParser from "cookie-parser";
-
+// @ts-ignore
+import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.js";
 import dbConnect from "./configs/db.js";
 dotenv.config();
 
@@ -44,10 +45,11 @@ const app = express();
   await server.start();
   dbConnect();
   app.use(CookieParser());
+  app.use(graphqlUploadExpress());
   server.applyMiddleware({ app, cors: corsOptions });
   app.listen({ port: process.env.PORT }, () =>
     console.log(
-      `🚀 Server ready at http://localhost:${process.env.PORT}/${server.graphqlPath}`
+      `🚀 Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`
     )
   );
 })();

@@ -1,3 +1,4 @@
 node_modules/
 .env
 client/todo.txt
+/client/components

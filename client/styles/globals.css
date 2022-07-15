@@ -4,8 +4,25 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
+@layer components {
+  .btn-input {
+    @apply px-3 py-2 my-2 outline-none w-full border border-gray-300 bg-gray-100 rounded-md text-xs font-normal
+  }
+
+  .btn-primary {
+    @apply rounded-md bg-sky-500 text-white px-3 py-2 font-medium text-xs
+  }
+}
+
+.swiper-slide.swiper-slide-active,
+.swiper-slide.swiper-slide-prev, 
+.swiper-slide.swiper-slide-next {
+  width: 100% !important;
+} 
+
 * {
   font-family: 'Poppins', sans-serif;
+  scroll-behavior: smooth;
 }
 
 .search_results_arrow {
@@ -64,4 +81,19 @@
 }
 .images > img {
   width: 100%;
+}
+
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: loading-animation 3s linear infinite;
+}
+
+@keyframes loading-animation {
+
+  100% {
+    transform: rotate(-360deg);
+  }
 }

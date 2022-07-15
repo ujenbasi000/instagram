@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import auth from "../middleware/auth.js";
 
 const userMutations = {
-  createUser: async (_, { input }) => {
+  createUser: async (_, { input }, { res }) => {
     const { email } = input;
 
     const emailExist = await User.findOne({ email });
@@ -26,6 +26,13 @@ const userMutations = {
     });
 
     if (user) {
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+
+      res.cookie("token", token, {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24 * 365,
+        sameSite: "strict",
+      });
       return {
         sucess: true,
         message: "User created successfully",
@@ -58,8 +65,6 @@ const userMutations = {
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-
-    console.log(token);
 
     res.cookie("token", token, {
       httpOnly: true,

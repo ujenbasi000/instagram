@@ -6,8 +6,17 @@ const PostSchema = new Schema(
     collections: [
       // image and video Collections
       {
-        type: String,
-        required: true,
+        url: {
+          type: String,
+          required: true,
+        },
+        cloud_id: {
+          type: String,
+          required: true,
+        },
+        type: {
+          type: String,
+        },
       },
     ],
     caption: {

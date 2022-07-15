@@ -8,7 +8,17 @@ const nextConfig = {
       "cdn-prod.medicalnewstoday.com",
       "pinkvilla.com",
       "www.kindpng.com",
+      "yt3.ggpht.com",
+      "cdn.unenvironment.org",
+      "img.freepik.com",
+      "media.npr.org",
+      "undp.org",
+      "elroy.twit.tv",
     ],
+  },
+  // add env
+  env: {
+    JWT_SECRET: "54SD!@#$#!@4ASDGFQE3823ZXD7F",
   },
 };
 

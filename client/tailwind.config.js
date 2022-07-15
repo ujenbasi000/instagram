@@ -17,6 +17,20 @@ module.exports = {
       xl: "1000px",
       // => @media (min-width: 1280px) { ... }
     },
+    extend: {
+      colors: {
+        border: "#dbdbdb",
+        background: "#fafafa",
+        light: "#efefef",
+      },
+      zIndex: {
+        60: 60,
+        70: 70,
+        80: 80,
+        90: 90,
+        100: 100,
+      },
+    },
   },
   plugins: [],
 };

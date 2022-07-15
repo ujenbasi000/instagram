@@ -6,12 +6,25 @@ const login = async (graphqlFunction, data, setLoading, setError) => {
         input: data,
       },
     });
-    console.log({ response });
-    return data;
+    return response;
+  } catch (error) {
+    console.log({ error: error.message });
+    setError(error.message);
+  }
+};
+const register = async (graphqlFunction, data, setLoading, setError) => {
+  try {
+    setLoading(true);
+    const response = await graphqlFunction({
+      variables: {
+        input: data,
+      },
+    });
+    return response;
   } catch (error) {
     console.log({ error: error.message });
     setError(error.message);
   }
 };
 
-export default login;
+export { login, register };

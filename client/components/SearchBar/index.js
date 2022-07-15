@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
+import useGlobalcontext from "../../hooks/useGlobalcontext.js";
 import CircleTimes from "../../public/assets/icons/CircleTimes.jsx";
 import Search from "../../public/assets/icons/search.jsx";
 import SearchResults from "../Header/SearchResults.js";
 
 const SearchBar = () => {
+  const { menus, setMenus } = useGlobalcontext();
   const [inputFocus, setInputFocus] = useState(false);
 
   const inputRef = useRef(null);
@@ -14,10 +16,17 @@ const SearchBar = () => {
 
   return (
     <div className="bg-gray-200 rounded-md relative w-[250px] h-[2.2rem]">
-      <div
-        className="fixed top-0 left-0 right-0 bottom-0 z-20 bg-trasparent"
-        onClick={() => setInputFocus(false)}
-      />
+      {(menus || inputFocus) && (
+        <>
+          <div
+            className="fixed top-0 left-0 right-0 bottom-0 z-50 bg-trasparent"
+            onClick={() => {
+              setInputFocus(false);
+              setMenus(false);
+            }}
+          />
+        </>
+      )}
       {!inputFocus && (
         <div
           className="absolute top-0 left-0 w-full h-full bg-gray-200 z-30 rounded-md py-1 px-3 text-gray-600 cursor-text flex items-center justify-start gap-3"

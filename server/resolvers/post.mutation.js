@@ -1,11 +1,11 @@
 import { PostModel as Post, CommentModel as Comment } from "../models/index.js";
 import auth from "../middleware/auth.js";
+import cloudinary from "../configs/cloudinary.js";
 
 const PostMutation = {
   createPost: async (_, { input }, ctx) => {
-    const { id } = await auth(ctx);
-
     try {
+      const { id } = await auth(ctx);
       if (!id) {
         return {
           sucess: false,
@@ -14,8 +14,42 @@ const PostMutation = {
         };
       }
 
+      const { collections, ...others } = input;
+      const urls = [];
+      for (let i = 0; i < collections.length; i++) {
+        const {
+          file: { createReadStream },
+        } = await collections[i];
+        const { file } = await collections[i];
+        const fileStream = createReadStream();
+
+        const response = await new Promise((resolve, reject) => {
+          const cloudStream = cloudinary.v2.uploader.upload_stream(
+            {
+              resource_type: "auto",
+              folder: "instagram",
+              upload_preset: "instagram_preset",
+            },
+            (err, result) => {
+              if (err) {
+                return reject(err);
+              }
+              resolve(result);
+            }
+          );
+          fileStream.pipe(cloudStream);
+        });
+
+        urls.push({
+          type: file.mimetype.includes("video") ? "video" : "image",
+          cloud_id: response.public_id,
+          url: response.secure_url,
+        });
+      }
+
       const post = await Post.create({
-        ...input,
+        ...others,
+        collections: urls,
         user: id,
       });
 
@@ -72,7 +106,7 @@ const PostMutation = {
       return {
         sucess: true,
         message: alreadyLiked ? "Post disliked" : "Post liked",
-        data: [postToLike],
+        data: postToLike,
       };
     } catch (error) {
       return {
@@ -90,6 +124,7 @@ const PostMutation = {
         return {
           sucess: false,
           message: "User not found",
+          data: null,
         };
       }
 
@@ -99,6 +134,7 @@ const PostMutation = {
         return {
           sucess: false,
           message: "Comment is required",
+          data: null,
         };
       }
 
@@ -107,14 +143,17 @@ const PostMutation = {
         return {
           sucess: false,
           message: "Post not found",
+          data: null,
         };
       }
 
-      const newComment = await Comment.create({
+      let newComment = await Comment.create({
         content: comment,
         user: id,
         post,
       });
+
+      newComment = await newComment.populate("user");
 
       postToComment.comments = [newComment._id].concat(postToComment.comments);
 
@@ -123,11 +162,13 @@ const PostMutation = {
       return {
         sucess: true,
         message: "Comment created",
+        data: newComment,
       };
     } catch (err) {
       return {
         sucess: false,
         message: err.message,
+        data: null,
       };
     }
   },

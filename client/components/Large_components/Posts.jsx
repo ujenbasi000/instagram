@@ -1,12 +1,17 @@
 import PostCard from "../Cards/PostCard";
-import { posts } from "../../helpers/dummy_data";
-import { useQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
 import { GET_POSTS } from "../../graphql/post.query";
 import { useEffect, useState } from "react";
+import Stories from "./Stories";
+import useGlobalcontext from "../../hooks/useGlobalcontext";
+import ViewPost from "./ViewPost";
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
-  const { data, loading } = useQuery(GET_POSTS, {
+  const { token } = useGlobalcontext();
+  const [viewPost, setViewPost] = useState(false);
+  const [viewPostId, setViewPostId] = useState(null);
+  const [GetPosts, { data, loading }] = useLazyQuery(GET_POSTS, {
     variables: {
       input: {
         limit: 10,
@@ -15,25 +20,44 @@ const Posts = () => {
     },
     context: {
       headers: {
-        authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyYzg2MWE2YzFkMTI3NGRiNmI0M2FkZCIsImlhdCI6MTY1NzQ3MjY5N30.rzRgSiU-Zi8kjKx6FL_zDMHcRfB-Jvcs2m9H980hZTs`,
+        authorization: `Bearer ${token}`,
       },
     },
   });
 
   useEffect(() => {
+    GetPosts();
+  }, [token]);
+
+  useEffect(() => {
     if (!loading) {
-      if (data.getPosts.sucess) {
-        console.log(data.getPosts.data);
-        setPosts(data.getPosts.data);
+      if (data) {
+        if (data.getPosts.sucess) {
+          setPosts(data.getPosts.data);
+        }
       }
     }
   }, [data]);
 
   return (
-    <div className="container mx-auto py-14 flex items-center justify-center flex-col">
+    <div className="w-full flex-1">
+      <Stories />
       {posts.map((post) => (
-        <PostCard post={post} />
+        <PostCard
+          post={post}
+          viewPost={viewPost}
+          setViewPost={setViewPost}
+          viewPostId={viewPostId}
+          setViewPostId={setViewPostId}
+        />
       ))}
+      {viewPost && viewPostId && (
+        <ViewPost
+          setViewPost={setViewPost}
+          viewPostId={viewPostId}
+          setViewPostId={setViewPostId}
+        />
+      )}
     </div>
   );
 };

@@ -1,19 +1,12 @@
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
-import { Header } from "../components";
+import { ApolloProvider } from "@apollo/client";
 import Context from "../helpers/ctx";
+import client from "../helpers/database";
 import "../styles/globals.css";
-
-const client = new ApolloClient({
-  uri: "http://localhost:3001/graphql",
-  cache: new InMemoryCache(),
-  credentials: "include",
-});
 
 function MyApp({ Component, pageProps }) {
   return (
     <ApolloProvider client={client}>
       <Context>
-        <Header />
         <Component {...pageProps} />
       </Context>
     </ApolloProvider>

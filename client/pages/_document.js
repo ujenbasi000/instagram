@@ -4,6 +4,8 @@ export default function Document() {
   return (
     <Html>
       <Head>
+        <title>Instagram</title>
+        <link rel="icon" href="/favicon.ico" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
@@ -14,6 +16,10 @@ export default function Document() {
           rel="stylesheet"
           href="https://unicons.iconscout.com/release/v4.0.0/css/line.css"
         />
+        <link
+          rel="stylesheet"
+          href="https://unicons.iconscout.com/release/v4.0.0/css/solid.css"
+        ></link>
         <link
           href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
           rel="stylesheet"

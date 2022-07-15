@@ -1,10 +1,13 @@
 import { gql } from "apollo-server-express";
 
 const typeDefs = gql`
+  scalar Upload
+
   input CreateUserInput {
     email: String!
     password: String!
     name: String!
+    username: String!
   }
 
   input UserInput {
@@ -28,9 +31,15 @@ const typeDefs = gql`
     gender: String
   }
 
+  type Collection {
+    url: String!
+    type: String!
+    cloud_id: String!
+  }
+
   type Post {
     _id: ID!
-    collections: [String!]
+    collections: [Collection!]
     caption: String!
     user: User!
     likes: LikeType!
@@ -45,9 +54,10 @@ const typeDefs = gql`
   }
 
   type Comment {
+    _id: ID!
     user: User!
     content: String!
-    likes: Int!
+    likes: LikeType!
     post: Post!
     createdAt: String!
     updatedAt: String!
@@ -77,6 +87,18 @@ const typeDefs = gql`
     hasSaved: Boolean!
   }
 
+  type ResponseWithData {
+    sucess: Boolean!
+    message: String!
+    data: Post
+  }
+
+  type ResponseWithComment {
+    sucess: Boolean!
+    message: String!
+    data: Comment!
+  }
+
   input LimitAndSkip {
     limit: Int!
     skip: Int!
@@ -88,8 +110,7 @@ const typeDefs = gql`
 
   input CreatePostInput {
     caption: String!
-    collections: [String!]
-    post: ID!
+    collections: [Upload!]
   }
 
   input SavePostInput {
@@ -125,8 +146,8 @@ const typeDefs = gql`
     followUnfollowUser(input: FollowUnfollowUserInput!): NormalResponse!
 
     createPost(input: CreatePostInput!): NormalResponse!
-    likeDislikePost(input: SavePostInput!): NormalResponse!
-    commentPost(input: CommentPostInput!): NormalResponse!
+    likeDislikePost(input: SavePostInput!): ResponseWithData!
+    commentPost(input: CommentPostInput!): ResponseWithComment!
     likeDislikeComment(input: LikeDislikeCommentInput!): NormalResponse!
 
     savePost(input: SavePostInput!): NormalResponse!

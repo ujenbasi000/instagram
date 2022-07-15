@@ -56,7 +56,15 @@ const PostQuery = {
 
       const { id } = input;
 
-      const post = await Post.findById(id).populate("user");
+      const post = await Post.findById(id)
+        .populate("user")
+        .populate({
+          path: "comments",
+          populate: {
+            path: "user",
+            model: "User",
+          },
+        });
       const hasSaved = await Save.findOne({ user: userId, post: id });
 
       return {

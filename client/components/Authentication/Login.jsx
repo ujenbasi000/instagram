@@ -4,11 +4,13 @@ import Link from "next/link";
 import GoogleLogo from "../../public/assets/google.png";
 import { handler } from "../../helpers/utility";
 import { useEffect, useRef, useState } from "react";
-import login from "../../helpers/async/user.async";
+import { login } from "../../helpers/async/user.async";
 import { useMutation } from "@apollo/client";
 import { LOGIN_MUTATION } from "../../graphql/query";
+import { useRouter } from "next/router";
 
 const Login = () => {
+  const router = useRouter();
   const [LoginFunction] = useMutation(LOGIN_MUTATION);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -23,9 +25,14 @@ const Login = () => {
     if (details.emailOrUsername && details.password) setDisableBtn(false);
   }, [details]);
 
-  const handleSubmit = async () => {
-    const response = await login(LoginFunction, details, setLoading, setError);
-    console.log({ response });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const {
+      data: { loginUser: data },
+    } = await login(LoginFunction, details, setLoading, setError);
+    if (data.sucess) {
+      router.push("/");
+    }
   };
 
   const slideShow1 = useRef();
@@ -88,40 +95,43 @@ const Login = () => {
                 <Image src={InstagramLogo} width={120} height={35} alt="Logo" />
               </div>
               <div className="w-10/12 mx-auto">
-                <input
-                  type="email"
-                  name="emailOrUsername"
-                  autoComplete="off"
-                  value={details.emailOrUsername}
-                  onChange={(e) => handler(e, details, setDetails)}
-                  placeholder="Username or email"
-                  className="block border border-gray-300 bg-gray-100 px-4 py-2 my-3 text-sm w-full outline-none rounded-sm"
-                />
-                <div className="relative">
+                <form onSubmit={handleSubmit}>
                   <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
+                    type="email"
+                    name="emailOrUsername"
+                    autoComplete="off"
+                    value={details.emailOrUsername}
                     onChange={(e) => handler(e, details, setDetails)}
-                    value={details.password}
-                    placeholder="Password"
-                    className="block border border-gray-300 bg-gray-100 px-4 py-2 my-3 text-sm w-full outline-none rounded-sm"
+                    placeholder="Username or email"
+                    className="btn-input"
                   />
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      onChange={(e) => handler(e, details, setDetails)}
+                      value={details.password}
+                      placeholder="Password"
+                      className="btn-input"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      className="absolute top-1/2 right-2 -translate-y-1/2"
+                    >
+                      <i
+                        className={`uil uil-eye${showPassword ? "-slash" : ""}`}
+                      ></i>
+                    </button>
+                  </div>
                   <button
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute top-1/2 right-2 -translate-y-1/2"
+                    disabled={disableBtn ? true : ""}
+                    type="submit"
+                    className="mt-4 disabled:opacity-70 w-full bg-blue-400 hover:bg-blue-500 rounded-md outline-none text-white font-medium text-sm py-2"
                   >
-                    <i
-                      className={`uil uil-eye${showPassword ? "-slash" : ""}`}
-                    ></i>
+                    Log In
                   </button>
-                </div>
-                <button
-                  disabled={disableBtn ? true : ""}
-                  onClick={handleSubmit}
-                  className="disabled:opacity-70 w-full bg-blue-400 hover:bg-blue-500 rounded-md outline-none text-white font-medium text-sm py-2"
-                >
-                  Log In
-                </button>
+                </form>
               </div>
               <div className="flex items-center justify-center my-4">
                 <div className="or w-full px-4 text-center">
@@ -137,6 +147,7 @@ const Login = () => {
                   <span className="ml-4">Login with Google</span>
                 </button>
               </div>
+
               <div className="text-center text-xs">
                 <Link href="/">
                   <span className="cursor-pointer">Forgot password?</span>
@@ -145,11 +156,10 @@ const Login = () => {
             </div>
             <div className="bg-white border border-gray-300 w-96 py-4 relative z-30 my-6 rounded-sm px-4">
               <p className="text-sm text-center">
-                Don't have and account?
-                <Link href="/">
+                <span className="mr-2">Don't have and account?</span>
+                <Link href="/accounts/signup">
                   <span className="text-blue-500 font-semibold cursor-pointer">
-                    {" "}
-                    Sign up{" "}
+                    Sign up
                   </span>
                 </Link>
               </p>

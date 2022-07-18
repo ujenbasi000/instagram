@@ -13,7 +13,9 @@ const nextConfig = {
       "img.freepik.com",
       "media.npr.org",
       "undp.org",
+      "www.clipartmax.com",
       "elroy.twit.tv",
+      "res.cloudinary.com",
     ],
   },
   // add env

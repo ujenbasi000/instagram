@@ -22,6 +22,7 @@ module.exports = {
         border: "#dbdbdb",
         background: "#fafafa",
         light: "#efefef",
+        borderDark: "rbg(219, 219, 219)",
       },
       zIndex: {
         60: 60,

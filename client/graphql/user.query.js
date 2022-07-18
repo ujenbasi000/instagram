@@ -43,11 +43,49 @@ const GET_AUTHORIZED_USER = gql`
   }
 `;
 
-const CREATE_POST_MUTATION = gql`
-  mutation NEW_POST($input: CreatePostInput!) {
-    createPost(input: $input) {
+const SEARCH_USER_QUERY = gql`
+  query SEARCH_USER($input: SearchUserInput!) {
+    getSearchedUser(input: $input) {
+      data {
+        username
+        name
+        _id
+        profile
+      }
       sucess
       message
+    }
+  }
+`;
+
+const GET_USER_DETAILS_QUERY = gql`
+  query GET_USER_DETAILS_BY_USERNAME($input: UserDetailsByUsernameInput!) {
+    getUserDetailsByUsername(input: $input) {
+      sucess
+      message
+      posts {
+        _id
+        caption
+        collections {
+          type
+          url
+        }
+      }
+      user {
+        username
+        name
+        profile
+        followers {
+          _id
+        }
+        following {
+          _id
+        }
+        website
+        bio
+        gender
+        phone
+      }
     }
   }
 `;
@@ -56,5 +94,6 @@ export {
   LOGIN_MUTATION,
   REGISTER_MUTATION,
   GET_AUTHORIZED_USER,
-  CREATE_POST_MUTATION,
+  SEARCH_USER_QUERY,
+  GET_USER_DETAILS_QUERY,
 };

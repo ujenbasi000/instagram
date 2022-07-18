@@ -12,6 +12,7 @@ const login = async (graphqlFunction, data, setLoading, setError) => {
     setError(error.message);
   }
 };
+
 const register = async (graphqlFunction, data, setLoading, setError) => {
   try {
     setLoading(true);
@@ -27,4 +28,26 @@ const register = async (graphqlFunction, data, setLoading, setError) => {
   }
 };
 
-export { login, register };
+const search = async (graphqlFunction, data, setLoading, setError, token) => {
+  try {
+    setLoading(true);
+    const response = await graphqlFunction({
+      variables: {
+        input: data,
+      },
+      context: {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      },
+    });
+    setLoading(false);
+    return response;
+  } catch (error) {
+    console.log({ error: error.message });
+    setError(error.message);
+    setLoading(false);
+  }
+};
+
+export { login, register, search };

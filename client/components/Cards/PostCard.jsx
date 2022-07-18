@@ -12,15 +12,34 @@ import DefaultProfile from "../../public/assets/default.jpg";
 import { getDate } from "../../helpers/utility";
 import "swiper/css";
 import Video from "../MiniComponents/Video";
-import { likePost, commentPost } from "../../helpers/async/post.async";
+import {
+  likePost,
+  commentPost,
+  savePost,
+} from "../../helpers/async/post.async";
 import {
   COMMENT_POST_MUTATION,
   LIKE_POST_MUTATION,
+  SAVE_POST_MUTATION,
 } from "../../graphql/post.query";
 import useGlobalcontext from "../../hooks/useGlobalcontext";
 import { useMutation } from "@apollo/client";
 import UnLike from "../../public/assets/icons/UnLike";
 import Loading from "../../public/assets/remove.png";
+
+// Import Swiper React components
+import { Swiper, SwiperSlide } from "swiper/react";
+
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+
+// import required modules
+import { Navigation, Pagination } from "swiper";
+import { like, save, submitComment } from "../../helpers/functions";
+import SolidBookmark from "../../public/assets/icons/SolidBookmark";
+import OwnComment from "../MiniComponents/OwnComment";
 
 const PostCard = ({ post: postData, setViewPost, setViewPostId }) => {
   const [post, setPost] = useState(postData);
@@ -31,10 +50,16 @@ const PostCard = ({ post: postData, setViewPost, setViewPostId }) => {
   const [resize, setResize] = useState(true);
   const [likePostMutation] = useMutation(LIKE_POST_MUTATION);
   const [commentPostMutation] = useMutation(COMMENT_POST_MUTATION);
+  const [savePostMutation] = useMutation(SAVE_POST_MUTATION);
   const { user, token } = useGlobalcontext();
   const [hasLiked, setHasLiked] = useState(false);
+  const [hasSaved, setHasSaved] = useState(false);
 
   // const [imageNavigation, setImageNavigation] = useState(0);
+
+  useEffect(() => {
+    setPost(postData);
+  }, [postData]);
 
   useEffect(() => {
     const comments = postData.comments.map((comment) =>
@@ -57,51 +82,23 @@ const PostCard = ({ post: postData, setViewPost, setViewPostId }) => {
   }, [post.likes]);
 
   useEffect(() => {
+    if (post) {
+      const hasSaved = post.saves.users.find((save) => save === user._id);
+      if (hasSaved) {
+        setHasSaved(true);
+      } else {
+        setHasSaved(false);
+      }
+    }
+  }, [post.saves]);
+
+  useEffect(() => {
     if (comment.content.trim().length > 0) {
       setPostBtnDisable(false);
     } else {
       setPostBtnDisable(true);
     }
   }, [comment.content]);
-
-  const like = async (id) => {
-    if (token) {
-      const { data } = await likePost(likePostMutation, token, id);
-      setPost((prev) => ({ ...prev, likes: data.likes }));
-    }
-  };
-
-  const submitComment = async (e) => {
-    e.preventDefault();
-    try {
-      setCommentLoading(true);
-      if (token) {
-        const data = await commentPost(
-          commentPostMutation,
-          token,
-          post._id,
-          comment
-        );
-        if (data.sucess) {
-          setComment({ content: "" });
-
-          setPost((prev) => {
-            const comments = [data.data, ...prev.comments].map((comment) => {
-              return comment.user._id === user._id ? comment : null;
-            });
-            if (comments) {
-              setOwnComment(comments);
-            }
-            return { ...prev, comments: [data.data, ...prev.comments] };
-          });
-        }
-      }
-      setCommentLoading(false);
-    } catch (err) {
-      console.log(err.message);
-      setCommentLoading(false);
-    }
-  };
 
   return (
     <div className="relative border border-[border] bg-white rounded-lg max-w-[33rem] w-full my-4 shadow-sm">
@@ -115,7 +112,11 @@ const PostCard = ({ post: postData, setViewPost, setViewPostId }) => {
             height={31}
           />
           <div className="ml-2">
-            <p className="text-xs font-semibold">{post.user.username}</p>
+            <Link href={`/${post.user.username}`}>
+              <p className="text-xs font-semibold cursor-pointer">
+                {post.user.username}
+              </p>
+            </Link>
           </div>
         </div>
         <div className="flex items-center">
@@ -126,22 +127,60 @@ const PostCard = ({ post: postData, setViewPost, setViewPostId }) => {
       </header>
       <section className="min-h-fit">
         <div className="w-full overflow-hidden relative">
-          {post.collections[post.collections.length - 1].type === "video" ? (
-            <Video url={post.collections[post.collections.length - 1].url} />
-          ) : (
-            <img
-              src={post.collections[post.collections.length - 1].url}
-              alt=""
-              className="w-full"
-              onDoubleClick={() => like(post._id)}
-            />
-          )}
+          <Swiper
+            cssMode={true}
+            navigation={true}
+            pagination={true}
+            modules={[Navigation, Pagination]}
+            className="mySwiper"
+          >
+            {post.collections.map((collection) =>
+              collection.type === "video" ? (
+                <SwiperSlide>
+                  <Video url={collection.url} />
+                </SwiperSlide>
+              ) : (
+                <SwiperSlide>
+                  <img
+                    src={collection.url}
+                    alt="No Image"
+                    className="w-full"
+                    onDoubleClick={() =>
+                      like(
+                        post._id,
+                        post,
+                        user,
+                        setHasLiked,
+                        setPost,
+                        likePost,
+                        token,
+                        likePostMutation
+                      )
+                    }
+                  />
+                </SwiperSlide>
+              )
+            )}
+          </Swiper>
         </div>
       </section>
       <section className="p-3 relative text-sm">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center justify-between gap-4">
-            <button onClick={() => like(post._id)}>
+            <button
+              onClick={() =>
+                like(
+                  post._id,
+                  post,
+                  user,
+                  setHasLiked,
+                  setPost,
+                  likePost,
+                  token,
+                  likePostMutation
+                )
+              }
+            >
               {hasLiked ? <UnLike /> : <Like />}
             </button>
             <button
@@ -158,8 +197,21 @@ const PostCard = ({ post: postData, setViewPost, setViewPostId }) => {
           </div>
 
           <div className="flex items-center justify-between gap-6">
-            <button>
-              <Bookmarks />
+            <button
+              onClick={() =>
+                save(
+                  post._id,
+                  post,
+                  user,
+                  setHasSaved,
+                  setPost,
+                  savePost,
+                  token,
+                  savePostMutation
+                )
+              }
+            >
+              {hasSaved ? <SolidBookmark /> : <Bookmarks />}
             </button>
           </div>
         </div>
@@ -191,23 +243,9 @@ const PostCard = ({ post: postData, setViewPost, setViewPostId }) => {
         )}
         {ownComment.length > 0 && (
           <section className="mb-2">
-            {ownComment.map((comment) => {
-              return (
-                <div className="flex items-center justify-between py-1">
-                  <span className="flex gap-1 items-end">
-                    <span className="font-semibold text-[13px]">
-                      {comment.user.username}
-                    </span>
-                    <span className="font-normal text-[13px]">
-                      {comment.content}
-                    </span>
-                  </span>
-                  <span>
-                    <Like size={14} />
-                  </span>
-                </div>
-              );
-            })}
+            {ownComment.map((comment) => (
+              <OwnComment comment={comment} />
+            ))}
           </section>
         )}
         <div>
@@ -226,7 +264,24 @@ const PostCard = ({ post: postData, setViewPost, setViewPostId }) => {
           <button type="button">
             <Smile />
           </button>
-          <form onSubmit={submitComment} className="flex w-full">
+          <form
+            onSubmit={(e) =>
+              submitComment(
+                e,
+                token,
+                setCommentLoading,
+                commentPost,
+                setPost,
+                setOwnComment,
+                setComment,
+                commentPostMutation,
+                comment,
+                post,
+                user
+              )
+            }
+            className="flex w-full"
+          >
             <input
               type="text"
               name="content"

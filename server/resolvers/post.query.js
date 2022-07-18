@@ -65,20 +65,17 @@ const PostQuery = {
             model: "User",
           },
         });
-      const hasSaved = await Save.findOne({ user: userId, post: id });
 
       return {
         sucess: true,
         message: "Post found",
         data: [post],
-        hasSaved: hasSaved ? true : false,
       };
     } catch (error) {
       return {
         sucess: false,
         message: error.message,
         data: null,
-        hasSaved: false,
       };
     }
   },

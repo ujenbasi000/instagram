@@ -17,8 +17,8 @@ import dbConnect from "./configs/db.js";
 dotenv.config();
 
 const corsOptions = {
-  origin: true,
   credentials: true,
+  origin: ["http://localhost:3000", "https://studio.apollographql.com"],
 };
 
 const resolvers = {

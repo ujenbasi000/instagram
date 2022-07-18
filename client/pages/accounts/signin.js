@@ -1,21 +1,18 @@
-import Login from "../../components/Authentication/Login";
+import { Login } from "../../components";
 
 const Signin = () => {
-  return (
-    <>
-      <Login />
-    </>
-  );
+  return <Login />;
 };
 
 export default Signin;
 
 export const getServerSideProps = async (ctx) => {
   const { token } = ctx.req.cookies;
+
   if (token) {
     return {
       props: {
-        token: {},
+        token: null,
       },
       redirect: {
         destination: "/",

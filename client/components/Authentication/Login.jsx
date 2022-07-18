@@ -6,8 +6,9 @@ import { handler } from "../../helpers/utility";
 import { useEffect, useRef, useState } from "react";
 import { login } from "../../helpers/async/user.async";
 import { useMutation } from "@apollo/client";
-import { LOGIN_MUTATION } from "../../graphql/query";
+import { LOGIN_MUTATION } from "../../graphql/user.query";
 import { useRouter } from "next/router";
+import Spinner from "../Loadings/Spinner";
 
 const Login = () => {
   const router = useRouter();
@@ -20,20 +21,6 @@ const Login = () => {
     emailOrUsername: "",
     password: "",
   });
-
-  useEffect(() => {
-    if (details.emailOrUsername && details.password) setDisableBtn(false);
-  }, [details]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const {
-      data: { loginUser: data },
-    } = await login(LoginFunction, details, setLoading, setError);
-    if (data.sucess) {
-      router.push("/");
-    }
-  };
 
   const slideShow1 = useRef();
   const slideShow2 = useRef();
@@ -55,6 +42,43 @@ const Login = () => {
     }, 4000);
   }, []);
 
+  useEffect(() => {
+    if (details.emailOrUsername && details.password) setDisableBtn(false);
+  }, [details]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const {
+      data: { loginUser: data },
+    } = await login(LoginFunction, details, setLoading, setError);
+    if (data.sucess) {
+      router.push("/");
+    }
+  };
+
+  const slides = [
+    {
+      src: "/images/ss1.png",
+      ref: slideShow1,
+      className: "transition-all duration-1000 absolute opacity-1",
+    },
+    {
+      src: "/images/ss2.png",
+      ref: slideShow2,
+      className: "transition-all duration-1000 absolute opacity-0",
+    },
+    {
+      src: "/images/ss3.png",
+      ref: slideShow3,
+      className: "transition-all duration-1000 absolute opacity-0",
+    },
+    {
+      src: "/images/ss4.png",
+      ref: slideShow4,
+      className: "transition-all duration-1000 absolute opacity-0",
+    },
+  ];
+
   return (
     <>
       <div className="bg-gray-100">
@@ -62,30 +86,15 @@ const Login = () => {
           <div className="hidden xl:block login-slider">
             <div className="slider-container">
               <div className="images">
-                <img
-                  src={"/images/ss1.png"}
-                  alt=""
-                  ref={slideShow1}
-                  className="transition-all duration-1000 absolute opacity-1"
-                />
-                <img
-                  src={"/images/ss2.png"}
-                  alt=""
-                  ref={slideShow2}
-                  className="transition-all duration-1000 absolute opacity-0"
-                />
-                <img
-                  src={"/images/ss3.png"}
-                  alt=""
-                  ref={slideShow3}
-                  className="transition-all duration-1000 absolute opacity-0"
-                />
-                <img
-                  src={"/images/ss4.png"}
-                  alt=""
-                  ref={slideShow4}
-                  className="transition-all duration-1000 absolute opacity-0"
-                />
+                {slides.map((slide) => {
+                  return (
+                    <img
+                      className={slide.className}
+                      src={slide.src}
+                      ref={slide.ref}
+                    />
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -129,7 +138,7 @@ const Login = () => {
                     type="submit"
                     className="mt-4 disabled:opacity-70 w-full bg-blue-400 hover:bg-blue-500 rounded-md outline-none text-white font-medium text-sm py-2"
                   >
-                    Log In
+                    {loading ? <Spinner /> : "Log In"}
                   </button>
                 </form>
               </div>

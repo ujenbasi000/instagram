@@ -11,6 +11,9 @@ const GET_POSTS = gql`
           total
           users
         }
+        saves {
+          users
+        }
         comments {
           _id
           likes {
@@ -59,6 +62,7 @@ const COMMENT_POST_MUTATION = gql`
       message
       sucess
       data {
+        _id
         content
         createdAt
         likes {
@@ -71,6 +75,15 @@ const COMMENT_POST_MUTATION = gql`
           _id
         }
       }
+    }
+  }
+`;
+
+const SAVE_POST_MUTATION = gql`
+  mutation SAVE_POST($input: SavePostInput!) {
+    savePost(input: $input) {
+      message
+      sucess
     }
   }
 `;
@@ -90,10 +103,14 @@ const GET_SINGLE_POST = gql`
           total
           users
         }
+        saves {
+          users
+        }
         user {
           _id
           profile
           username
+          name
         }
         comments {
           _id
@@ -112,7 +129,15 @@ const GET_SINGLE_POST = gql`
       }
       message
       sucess
-      hasSaved
+    }
+  }
+`;
+
+const CREATE_POST_MUTATION = gql`
+  mutation NEW_POST($input: CreatePostInput!) {
+    createPost(input: $input) {
+      sucess
+      message
     }
   }
 `;
@@ -122,4 +147,6 @@ export {
   LIKE_POST_MUTATION,
   COMMENT_POST_MUTATION,
   GET_SINGLE_POST,
+  SAVE_POST_MUTATION,
+  CREATE_POST_MUTATION,
 };

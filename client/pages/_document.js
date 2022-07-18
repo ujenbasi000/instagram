@@ -12,6 +12,10 @@ export default function Document() {
           href="https://fonts.gstatic.com"
           crossOrigin={"true"}
         />
+        <script
+          src="https://kit.fontawesome.com/b603f639df.js"
+          crossorigin="anonymous"
+        ></script>
         <link
           rel="stylesheet"
           href="https://unicons.iconscout.com/release/v4.0.0/css/line.css"

@@ -1,11 +1,11 @@
-const Play = () => {
+const Play = ({ size = 70 }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       enable-background="new 0 0 24 24"
       viewBox="0 0 24 24"
-      width={70}
-      height={70}
+      width={size}
+      height={size}
     >
       <path
         fill="#fafafa"

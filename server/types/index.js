@@ -43,6 +43,7 @@ const typeDefs = gql`
     caption: String!
     user: User!
     likes: LikeType!
+    saves: SaveType!
     comments: [Comment!]
     createdAt: String!
     updatedAt: String!
@@ -50,6 +51,10 @@ const typeDefs = gql`
 
   type LikeType {
     total: Int!
+    users: [ID!]
+  }
+
+  type SaveType {
     users: [ID!]
   }
 
@@ -84,7 +89,6 @@ const typeDefs = gql`
     sucess: Boolean!
     message: String!
     data: [Post]
-    hasSaved: Boolean!
   }
 
   type ResponseWithData {
@@ -130,6 +134,27 @@ const typeDefs = gql`
     userId: ID!
   }
 
+  input SearchUserInput {
+    search: String!
+  }
+
+  type SearchUserResponse {
+    sucess: Boolean!
+    message: String!
+    data: [User]
+  }
+
+  type UserDetailsResponse {
+    sucess: Boolean!
+    message: String
+    user: User
+    posts: [Post]
+  }
+
+  input UserDetailsByUsernameInput {
+    username: String!
+  }
+
   type Query {
     getGreetings: String!
     getAuthorizedUser: UserResponse!
@@ -138,6 +163,10 @@ const typeDefs = gql`
     getSinglePost(input: GetSinglePostInput!): SavedPostResponse!
     getSavedPosts(input: LimitAndSkip!): PostResponse!
     getUserPost: PostResponse!
+    getSearchedUser(input: SearchUserInput!): SearchUserResponse!
+    getUserDetailsByUsername(
+      input: UserDetailsByUsernameInput!
+    ): UserDetailsResponse!
   }
 
   type Mutation {

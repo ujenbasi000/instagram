@@ -64,14 +64,6 @@ const userMutations = {
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-
-    res.cookie("token", token, {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 365,
-      sameSite: "strict",
-    });
-
     if (!isPasswordValid) {
       return {
         sucess: false,
@@ -79,6 +71,13 @@ const userMutations = {
         data: null,
       };
     }
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 365,
+      sameSite: "strict",
+    });
 
     return {
       sucess: true,

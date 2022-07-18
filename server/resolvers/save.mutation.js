@@ -1,5 +1,5 @@
 import auth from "../middleware/auth.js";
-import { SaveModel as Save } from "../models/index.js";
+import { SaveModel as Save, PostModel as Post } from "../models/index.js";
 
 const SaveMutation = {
   savePost: async (_, { input }, ctx) => {
@@ -14,18 +14,31 @@ const SaveMutation = {
         };
       }
       let alreadySaved = false;
-      const post = await Save.findOne({ user: id, post: input.post });
+      const save = await Save.findOne({ user: id, post: input.post });
+      const post = await Post.findById(input.post);
 
-      if (post) {
+      if (!post) {
+        return {
+          success: false,
+          message: "Post not found",
+          data: null,
+        };
+      }
+
+      if (save) {
         alreadySaved = true;
+        post.saves.users.pull(id);
         await Save.findOneAndDelete({ user: id, post: input.post });
       } else {
+        post.saves.users.push(id);
         alreadySaved = false;
         await Save.create({
           ...input,
           user: id,
         });
       }
+
+      await post.save();
 
       return {
         sucess: true,

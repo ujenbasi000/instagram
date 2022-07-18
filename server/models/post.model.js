@@ -38,6 +38,14 @@ const PostSchema = new Schema(
         },
       ],
     },
+    saves: {
+      users: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+        },
+      ],
+    },
     comments: [
       {
         type: Schema.Types.ObjectId,

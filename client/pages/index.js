@@ -1,15 +1,10 @@
-import { useState } from "react";
-import { Header } from "../components";
-import CreateNew from "../components/Large_components/CreateNew";
-import HomeContent from "../components/Large_components/HomeContent";
-import HeaderDivider from "../components/MiniComponents/HeaderDivider";
-import { GET_AUTHORIZED_USER } from "../graphql/query";
+import { Header, CreateNew, HomeContent, HeaderDivider } from "../components";
+import { GET_AUTHORIZED_USER } from "../graphql/user.query";
 import client from "../helpers/database";
 import useGlobalcontext from "../hooks/useGlobalcontext";
 
 const Home = ({ user, token }) => {
-  const { setUser, setToken } = useGlobalcontext();
-  const [createNew, setCreateNew] = useState(false);
+  const { setUser, setToken, createNew, setCreateNew } = useGlobalcontext();
 
   if (user) {
     setUser(user);
@@ -17,7 +12,7 @@ const Home = ({ user, token }) => {
   }
 
   return (
-    <div className="bg-background">
+    <div className="bg-background min-h-screen">
       <Header setCreateNew={setCreateNew} />
       <HeaderDivider />
       <HomeContent />
@@ -30,38 +25,48 @@ export default Home;
 
 export const getServerSideProps = async (ctx) => {
   const { token } = ctx.req.cookies;
-  if (token) {
-    const { data } = await client.query({
-      query: GET_AUTHORIZED_USER,
-      context: {
-        headers: {
-          authorization: `Bearer ${token}`,
+
+  try {
+    if (token) {
+      const { data } = await client.query({
+        query: GET_AUTHORIZED_USER,
+        context: {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
         },
-      },
-    });
-    if (data) {
-      return {
-        props: {
-          token,
-          user: data.getAuthorizedUser.data,
-        },
-      };
+      });
+      if (data) {
+        return {
+          props: {
+            token,
+            user: data.getAuthorizedUser.data,
+          },
+        };
+      } else {
+        return {
+          props: {
+            token: null,
+            user: null,
+          },
+        };
+      }
     } else {
       return {
         props: {
           token: null,
           user: null,
         },
+        redirect: {
+          destination: "/accounts/signin",
+        },
       };
     }
-  } else {
+  } catch (err) {
     return {
       props: {
         token: null,
         user: null,
-      },
-      redirect: {
-        destination: "/accounts/signin",
       },
     };
   }

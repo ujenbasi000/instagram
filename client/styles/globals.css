@@ -2,26 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
 @layer components {
   .btn-input {
-    @apply px-3 py-2 my-2 outline-none w-full border border-gray-300 bg-gray-100 rounded-md text-xs font-normal
+    @apply px-3 py-2 my-2 outline-none w-full border border-gray-300 bg-gray-100 rounded-md text-xs font-normal;
   }
 
   .btn-primary {
-    @apply rounded-md bg-sky-500 text-white px-3 py-2 font-medium text-xs
+    @apply rounded-md bg-sky-500 text-white px-3 py-2 font-medium text-xs;
   }
 }
 
 .swiper-slide.swiper-slide-active,
-.swiper-slide.swiper-slide-prev, 
+.swiper-slide.swiper-slide-prev,
 .swiper-slide.swiper-slide-next {
   width: 100% !important;
-} 
+}
 
 * {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   scroll-behavior: smooth;
 }
 
@@ -33,11 +33,10 @@
 
 .or {
   position: relative;
-  
 }
 
 .or::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 5%;
@@ -48,14 +47,14 @@
 }
 
 .or::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   right: 5%;
   width: 40%;
   height: 0.5px;
   transform: translateY(-50%);
-  background:  rgb(199, 199, 199);
+  background: rgb(199, 199, 199);
 }
 
 .login-slider {
@@ -72,7 +71,7 @@
   position: relative;
 }
 
-.images{
+.images {
   position: absolute;
   top: 25px;
   right: 45px;
@@ -83,17 +82,69 @@
   width: 100%;
 }
 
-
 .loading {
   display: flex;
   justify-content: center;
   align-items: center;
-  animation: loading-animation 3s linear infinite;
+  animation: IGCoreSpinnerSpin12 1.2s steps(12) infinite;
 }
 
-@keyframes loading-animation {
-
-  100% {
-    transform: rotate(-360deg);
+@keyframes IGCoreSpinnerSpin12 {
+  0% {
+    transform: rotate(0deg);
   }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-button-next::after {
+  background-image: url(https://static.cdninstagram.com/rsrc.php/v3/y5/r/bve3a0HeZc8.png);
+  background-repeat: no-repeat;
+  background-position: -162px -98px;
+  height: 30px;
+  width: 30px;
+  content: "" !important;
+}
+
+.swiper-button-prev::after {
+  background-image: url(https://static.cdninstagram.com/rsrc.php/v3/y5/r/bve3a0HeZc8.png);
+  background-repeat: no-repeat;
+  background-position: -130px -98px;
+  height: 30px;
+  width: 30px;
+  content: "" !important;
+}
+
+.swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.swiper-slide.swiper-slide-active {
+  height: auto;
+}
+
+.posts-section {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr;
+  grid-column-gap: 25px;
+  grid-row-gap: 25px;
 }

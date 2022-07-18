@@ -8,6 +8,7 @@ const auth = async (ctx) => {
     if (!token) {
       return { id: null };
     }
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     if (!decoded) {

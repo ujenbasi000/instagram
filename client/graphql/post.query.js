@@ -7,24 +7,12 @@ const GET_POSTS = gql`
         _id
         caption
         createdAt
-        likes {
-          total
-          users
-        }
         saves {
           users
         }
-        comments {
-          _id
-          likes {
-            total
-            users
-          }
-          content
-          user {
-            _id
-            username
-          }
+        likes {
+          total
+          users
         }
         user {
           username
@@ -33,6 +21,18 @@ const GET_POSTS = gql`
         collections {
           url
           type
+        }
+        comments {
+          _id
+          content
+          likes {
+            total
+            users
+          }
+          user {
+            _id
+            username
+          }
         }
       }
       message
@@ -65,14 +65,14 @@ const COMMENT_POST_MUTATION = gql`
         _id
         content
         createdAt
+        updatedAt
         likes {
           total
           users
         }
-        updatedAt
         user {
-          username
           _id
+          username
         }
       }
     }

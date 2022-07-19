@@ -138,6 +138,10 @@ const typeDefs = gql`
     search: String!
   }
 
+  input UserDetailsByUsernameInput {
+    username: String!
+  }
+
   type SearchUserResponse {
     sucess: Boolean!
     message: String!
@@ -151,8 +155,11 @@ const typeDefs = gql`
     posts: [Post]
   }
 
-  input UserDetailsByUsernameInput {
-    username: String!
+  type followUnfollowUserResponse {
+    sucess: Boolean
+    message: String
+    loggedInUser: User
+    user: User
   }
 
   type Query {
@@ -172,7 +179,9 @@ const typeDefs = gql`
   type Mutation {
     createUser(input: CreateUserInput!): UserResponse!
     loginUser(input: UserInput!): UserResponse!
-    followUnfollowUser(input: FollowUnfollowUserInput!): NormalResponse!
+    followUnfollowUser(
+      input: FollowUnfollowUserInput!
+    ): followUnfollowUserResponse!
 
     createPost(input: CreatePostInput!): NormalResponse!
     likeDislikePost(input: SavePostInput!): ResponseWithData!

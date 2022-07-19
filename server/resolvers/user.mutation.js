@@ -138,9 +138,12 @@ const userMutations = {
 
       await userToFollow.save();
       await user.save();
+
       return {
         sucess: true,
         message: "User followed successfully",
+        loggedInUser: user,
+        user: userToFollow,
       };
     } catch (error) {
       return {

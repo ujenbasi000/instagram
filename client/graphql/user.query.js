@@ -72,8 +72,34 @@ const GET_USER_DETAILS_QUERY = gql`
         }
       }
       user {
+        _id
         username
         name
+        profile
+        website
+        bio
+        gender
+        phone
+        followers {
+          _id
+        }
+        following {
+          _id
+        }
+      }
+    }
+  }
+`;
+
+const FOLLOW_MUTATION = gql`
+  mutation FOLLOW_UNFOLLOW_USER($input: FollowUnfollowUserInput!) {
+    followUnfollowUser(input: $input) {
+      sucess
+      message
+      loggedInUser {
+        _id
+        name
+        username
         profile
         followers {
           _id
@@ -81,10 +107,18 @@ const GET_USER_DETAILS_QUERY = gql`
         following {
           _id
         }
-        website
-        bio
-        gender
-        phone
+      }
+      user {
+        _id
+        name
+        username
+        profile
+        following {
+          _id
+        }
+        followers {
+          _id
+        }
       }
     }
   }
@@ -96,4 +130,5 @@ export {
   GET_AUTHORIZED_USER,
   SEARCH_USER_QUERY,
   GET_USER_DETAILS_QUERY,
+  FOLLOW_MUTATION,
 };

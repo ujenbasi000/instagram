@@ -57,7 +57,11 @@ const Profile = ({ user, token }) => {
     <div className="bg-background min-h-screen">
       <Header setCreateNew={setCreateNew} />
       <HeaderDivider />
-      <ProfileHeader user={details?.user} postLenght={details?.posts?.length} />
+      <ProfileHeader
+        user={details?.user}
+        setDetails={setDetails}
+        postLenght={details?.posts?.length}
+      />
       <ProfileBody posts={details?.posts} />
       {createNew && <CreateNew setCreateNew={setCreateNew} />}
     </div>

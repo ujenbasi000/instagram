@@ -44,7 +44,6 @@ export const save = async (
   savePostMutation
 ) => {
   if (token) {
-    console.log({ post });
     const saveState = post.saves.users.find((save) => save === user._id);
     if (saveState) {
       setHasSaved(false);
@@ -80,7 +79,6 @@ export const submitComment = async (
   post,
   user
 ) => {
-  console.log("Hello world!");
   e.preventDefault();
   try {
     setCommentLoading(true);
@@ -112,5 +110,38 @@ export const submitComment = async (
   } catch (err) {
     console.log(err.message);
     setCommentLoading(false);
+  }
+};
+
+export const follow = async (
+  user,
+  setUserDetail,
+  setDetails,
+  token,
+  mutation,
+  followUnfollowFunction,
+  setLoading,
+  setError
+) => {
+  if (token) {
+    const { data } = await followUnfollowFunction(
+      mutation,
+      user,
+      setLoading,
+      setError,
+      token
+    );
+    if (data) {
+      if (data.followUnfollowUser.sucess) {
+        setUserDetail(data.followUnfollowUser.loggedInUser);
+        setDetails((prev) => ({
+          ...prev,
+          user: {
+            ...prev.user,
+            followers: data.followUnfollowUser.user.followers,
+          },
+        }));
+      }
+    }
   }
 };

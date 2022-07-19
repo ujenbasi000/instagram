@@ -50,4 +50,32 @@ const search = async (graphqlFunction, data, setLoading, setError, token) => {
   }
 };
 
-export { login, register, search };
+const followUnfollow = async (
+  graphqlFunction,
+  user,
+  setLoading,
+  setError,
+  token
+) => {
+  try {
+    setLoading(true);
+    const response = await graphqlFunction({
+      variables: {
+        input: { userId: user._id },
+      },
+      context: {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      },
+    });
+    setLoading(false);
+    return response;
+  } catch (error) {
+    console.log({ error: error.message });
+    setError(error.message);
+    setLoading(false);
+  }
+};
+
+export { login, register, search, followUnfollow };
